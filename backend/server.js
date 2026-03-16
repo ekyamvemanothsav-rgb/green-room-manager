@@ -1,53 +1,89 @@
-const express = require("express")
-const mongoose = require("mongoose")
-const cors = require("cors")
-require("dotenv").config()
-
-const authRoutes = require("./routes/auth")
-const adminRoutes = require("./routes/admin")
-const coordinatorRoutes = require("./routes/coordinator")
-const participantRoutes = require("./routes/participant")
-const roomRoutes = require("./routes/rooms")
-const verifyToken = require("./middleware/authMiddleware")
-
-const app = express()
-
-// Global Log Middleware
-app.use((req, res, next) => {
-  console.log(`${req.method} ${req.url}`);
-  next();
-});
-
-app.use(cors({
-    origin: "*",
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"]
-}))
-app.use(express.json())
-
-mongoose.connect(process.env.MONGO_URI)
-.then(() => console.log("MongoDB Connected"))
-.catch(err => console.log(err))
+const express = require("express");
+const mongoose = require("mongoose");
+const cors = require("cors");
+require("dotenv").config();
 
 // ROUTES
-app.use("/api/auth", authRoutes)
-app.use("/api/admin", adminRoutes)
-app.use("/api/coordinator", coordinatorRoutes)
-app.use("/api/participant", participantRoutes)
-app.use("/api/rooms", roomRoutes)
+const authRoutes = require("./routes/auth");
+const adminRoutes = require("./routes/admin");
+const coordinatorRoutes = require("./routes/coordinator");
+const participantRoutes = require("./routes/participant");
+const roomRoutes = require("./routes/rooms");
 
+// MIDDLEWARE
+const verifyToken = require("./middleware/authMiddleware");
+
+const app = express();
+
+/* ---------------- GLOBAL MIDDLEWARE ---------------- */
+
+// Request logger
+app.use((req, res, next) => {
+console.log(`${req.method} ${req.url}`);
+next();
+});
+
+// CORS
+app.use(cors({
+origin: "*",
+methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+allowedHeaders: ["Content-Type", "Authorization"]
+}));
+
+// Body parser
+app.use(express.json());
+
+/* ---------------- DATABASE CONNECTION ---------------- */
+
+mongoose.connect(process.env.MONGO_URI)
+.then(() => {
+console.log("MongoDB Connected");
+})
+.catch((err) => {
+console.error("MongoDB connection error:", err);
+});
+
+/* ---------------- ROUTES ---------------- */
+
+// Authentication routes
+app.use("/api/auth", authRoutes);
+
+// Admin routes
+app.use("/api/admin", adminRoutes);
+
+// Coordinator routes
+app.use("/api/coordinator", coordinatorRoutes);
+
+// Participant routes
+app.use("/api/participant", participantRoutes);
+
+// Room routes
+app.use("/api/rooms", roomRoutes);
+
+/* ---------------- BASIC ROUTES ---------------- */
+
+// Home route
 app.get("/", (req, res) => {
-  res.send("Green Room Manager API Running")
-})
+res.send("Green Room Manager API Running");
+});
 
-// TEST PROTECTED ROUTE
+// Health check (useful for Render)
+app.get("/health", (req, res) => {
+res.status(200).send("Server is healthy");
+});
+
+// Test protected route
 app.get("/api/protected", verifyToken, (req, res) => {
-    res.json({
-        message: "Access granted",
-        user: req.user
-    })
-})
+res.json({
+message: "Access granted",
+user: req.user
+});
+});
 
-app.listen(process.env.PORT, () => {
-  console.log(`Server running on port ${process.env.PORT}`)
-})
+/* ---------------- START SERVER ---------------- */
+
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+console.log(`Server running on port ${PORT}`);
+});
