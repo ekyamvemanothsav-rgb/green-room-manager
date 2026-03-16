@@ -1,0 +1,101 @@
+### REGISTER USER
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+"name": "Super Admin",
+"email": "admin@fest.com",
+"password": "123456",
+"role": "superadmin"
+}
+
+### LOGIN USER
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+"email": "admin@fest.com",
+"password": "123456"
+}
+
+### TEST PROTECTED ROUTE
+GET http://localhost:5000/api/protected
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YjA0M2E3Yjg3Y2YwZmIyYjYyMThlOCIsInJvbGUiOiJzdXBlcmFkbWluIiwiaWF0IjoxNzczMTYxNDY3LCJleHAiOjE3NzMyNDc4Njd9.9gYpVs9DCXZLgBr1iCbssc23tdaa_WdIQuWxTvoGrA8
+
+### CREATE ADMIN
+POST http://localhost:5000/api/admin/create-admin
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YjA0M2E3Yjg3Y2YwZmIyYjYyMThlOCIsInJvbGUiOiJzdXBlcmFkbWluIiwiaWF0IjoxNzczMTYxNDY3LCJleHAiOjE3NzMyNDc4Njd9.9gYpVs9DCXZLgBr1iCbssc23tdaa_WdIQuWxTvoGrA8
+
+{
+"name": "Admin One",
+"email": "admin1@fest.com",
+"password": "123456"
+}
+
+
+### LOGIN AS ADMIN
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+"email": "admin1@fest.com",
+"password": "123456"
+}
+
+### CREATE COORDINATOR
+POST http://localhost:5000/api/coordinator/create-coordinator
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YjA0ZWFkYWZmN2EyMGI1NTk5M2JmNCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc3MzE2MjY5OCwiZXhwIjoxNzczMjQ5MDk4fQ.hZlU52kPiJCWoIQqEtPc28ehiy5RzIuHcqiyubvT8Xw
+
+{
+"name": "Coordinator One",
+"email": "coord1@fest.com",
+"password": "123456"
+}
+
+
+### LOGIN AS COORDINATOR
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+"email": "coord1@fest.com",
+"password": "123456"
+}
+
+
+
+### CREATE PARTICIPANT
+POST http://localhost:5000/api/participant/create-participant
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YjA1MGY0Y2VjYTZjYmNlMGNiM2M2OSIsInJvbGUiOiJjb29yZGluYXRvciIsImlhdCI6MTc3MzE2MzA1MCwiZXhwIjoxNzczMjQ5NDUwfQ.6Z3XuoS_qTkbA7ja_sas04pbeNNWJYQUyuh-ehWNrMk
+
+{
+"name": "Participant One",
+"email": "part1@fest.com",
+"password": "123456"
+}
+
+
+### room creation 
+
+POST http://localhost:5000/api/rooms/create
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YjA0ZWFkYWZmN2EyMGI1NTk5M2JmNCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc3MzE2MzUwOSwiZXhwIjoxNzczMjQ5OTA5fQ.EeMwzV9dSngVIoppsbdyU8LT_6GxtduSFVLRw8kl5ho
+
+{
+"roomName": "Green Room A",
+"capacity": 10
+}
+
+
+### ASSIGN PARTICIPANT
+POST http://localhost:5000/api/rooms/assign
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YjA0ZWFkYWZmN2EyMGI1NTk5M2JmNCIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc3MzE2MzUwOSwiZXhwIjoxNzczMjQ5OTA5fQ.EeMwzV9dSngVIoppsbdyU8LT_6GxtduSFVLRw8kl5ho
+
+{
+"participantId": "69b0524078204a6db4503816",
+"roomId": "69b05437658d1b96424dfba9"
+}

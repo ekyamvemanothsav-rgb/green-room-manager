@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Room - Green Room Manager</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <script>
+        tailwind.config = {
+            theme: { extend: { fontFamily: { sans: ['Inter','sans-serif'] }, colors: { primary: '#10b981', secondary: '#064e3b' } } }
+        }
+    </script>
+</head>
+<body class="bg-slate-900 text-white min-h-screen font-sans relative">
+
+    <div class="absolute top-[-10%] right-[-5%] w-[400px] h-[400px] bg-orange-500/10 rounded-full blur-[100px] -z-10"></div>
+    <div class="absolute bottom-[-10%] left-[-5%] w-[300px] h-[300px] bg-emerald-500/10 rounded-full blur-[100px] -z-10"></div>
+
+    <!-- Navbar -->
+    <nav class="w-full px-6 py-4 flex justify-between items-center glass-header sticky top-0 z-50 border-b border-white/5">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-emerald-300 flex items-center justify-center shadow-lg shadow-primary/20">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-slate-900" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                </svg>
+            </div>
+            <div>
+                <h1 class="text-lg font-bold text-white leading-tight">GreenRoom<span class="text-primary sm:inline hidden">Hub</span></h1>
+                <p id="roomTitle" class="text-xs text-orange-400 font-medium">Coordinator · Room Manager</p>
+            </div>
+        </div>
+        <a href="dashboard.html" class="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 text-slate-300 hover:text-white transition-all text-sm font-medium">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+            </svg>
+            Dashboard
+        </a>
+    </nav>
+
+    <main class="max-w-4xl mx-auto px-4 py-8">
+
+        <!-- Room selector -->
+        <div class="glass-card p-6 rounded-2xl border border-white/5 mb-6 animate-fade-in-up">
+            <label class="text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2 block">Select Room to Manage</label>
+            <div class="flex gap-3">
+                <select id="roomSelect" class="flex-1 px-4 py-3 bg-slate-900/70 border border-slate-700/50 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all">
+                    <option value="">Loading rooms…</option>
+                </select>
+                <button onclick="loadRoomDetails()" class="px-5 py-3 bg-orange-500/20 hover:bg-orange-500/30 border border-orange-500/30 text-orange-400 font-semibold rounded-xl transition-all">
+                    Load
+                </button>
+            </div>
+        </div>
+
+        <!-- Room info card -->
+        <div id="roomInfo" class="hidden glass-card p-6 rounded-2xl border border-white/5 mb-6 animate-fade-in-up">
+            <div class="flex items-center justify-between mb-2">
+                <h2 id="infoRoomName" class="text-xl font-bold text-white"></h2>
+                <span id="infoOccupancy" class="text-sm text-slate-400 font-medium"></span>
+            </div>
+            <div id="infoBar" class="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
+                <div id="infoBarFill" class="bg-primary h-2 rounded-full transition-all duration-700" style="width:0%"></div>
+            </div>
+        </div>
+
+        <!-- Participant list -->
+        <div id="participantSection" class="hidden animate-fade-in-up">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-bold text-white">Participants Currently Inside</h3>
+                <button onclick="loadRoomDetails()" class="text-xs text-slate-400 hover:text-white flex items-center gap-1 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                    Refresh
+                </button>
+            </div>
+
+            <div id="actionMsg" class="hidden mb-4 text-center text-sm p-3 rounded-xl border font-medium"></div>
+
+            <div id="participantList" class="space-y-3"></div>
+
+            <div id="emptyRoom" class="hidden text-center py-12 glass-card rounded-2xl border border-white/5">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-slate-600 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                <p class="text-slate-400 font-medium">No participants currently in this room</p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+    const token = localStorage.getItem("token");
+    const role  = localStorage.getItem("role");
+
+    if (!token || !["admin","coordinator"].includes(role)) {
+        window.location.href = "login.html";
+    }
+
+    let currentRoomId = null;
+
+    // Load all rooms into selector
+    async function loadRooms() {
+        try {
+            const res   = await fetch("http://127.0.0.1:5000/api/rooms/all");
+            const rooms = await res.json();
+            const sel   = document.getElementById("roomSelect");
+            sel.innerHTML = rooms.length === 0
+                ? `<option value="">No rooms yet</option>`
+                : rooms.map(r => `<option value="${r.roomId}">${r.roomName} (${r.occupied}/${r.capacity})</option>`).join("");
+
+            // Auto-select first room if only one
+            if (rooms.length === 1 && !currentRoomId) loadRoomDetails();
+        } catch (e) {
+            console.error("loadRooms error:", e);
+            document.getElementById("roomSelect").innerHTML = `<option value="">Failed to load rooms</option>`;
+        }
+    }
+
+    async function loadRoomDetails() {
+        const roomId = document.getElementById("roomSelect").value;
+        if (!roomId) return;
+        currentRoomId = roomId;
+
+        try {
+            const res  = await fetch(`http://127.0.0.1:5000/api/rooms/details/${roomId}`, {
+                headers: { "Authorization": "Bearer " + token }
+            });
+            
+            if (!res.ok) {
+                const errorData = await res.json();
+                alert(errorData.message || "Failed to load room details");
+                return;
+            }
+
+            const data = await res.json();
+
+            // Info bar
+            const pct = data.capacity > 0 ? Math.round((data.participants.length / data.capacity) * 100) : 0;
+            document.getElementById("infoRoomName").textContent   = data.roomName;
+            document.getElementById("infoOccupancy").textContent  = `${data.participants.length} / ${data.capacity} occupied`;
+            document.getElementById("infoBarFill").style.width    = Math.min(pct, 100) + "%";
+            document.getElementById("infoBarFill").className      = `h-2 rounded-full transition-all duration-700 ${pct >= 90 ? "bg-red-500" : pct >= 75 ? "bg-orange-500" : "bg-primary"}`;
+            document.getElementById("roomInfo").classList.remove("hidden");
+            document.getElementById("participantSection").classList.remove("hidden");
+            document.getElementById("actionMsg").classList.add("hidden");
+
+            const list = document.getElementById("participantList");
+            const empty = document.getElementById("emptyRoom");
+
+            if (data.participants.length === 0) {
+                list.innerHTML = "";
+                empty.classList.remove("hidden");
+            } else {
+                empty.classList.add("hidden");
+                list.innerHTML = data.participants.map(p => `
+                    <div class="glass-card px-5 py-4 rounded-xl border border-white/5 flex items-center justify-between gap-4 hover:border-orange-500/20 transition-all">
+                        <div class="flex items-center gap-4 flex-1 min-w-0">
+                            <div class="w-10 h-10 rounded-full bg-orange-500/20 border border-orange-500/30 flex items-center justify-center flex-shrink-0">
+                                <span class="text-orange-400 font-bold text-sm text-center w-full leading-10">${p.name.charAt(0).toUpperCase()}</span>
+                            </div>
+                            <div class="min-w-0">
+                                <p class="font-semibold text-white truncate">${p.name}</p>
+                                <div class="flex flex-wrap gap-x-3 text-xs text-slate-400 mt-0.5">
+                                    <span>📞 ${p.phoneNumber || "—"}</span>
+                                    <span>🏫 ${p.collegeName || "—"}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <button onclick="forceCheckout('${p._id}', '${p.name.replace(/'/g,"\\'")}', this)"
+                            class="flex-shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-xl bg-red-500/15 hover:bg-red-500/30 border border-red-500/30 text-red-400 text-xs font-bold transition-all">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                            </svg>
+                            Force Out
+                        </button>
+                    </div>
+                `).join("");
+            }
+        } catch (e) {
+            console.error("loadRoomDetails error:", e);
+            alert("Error loading room details. Is the backend running?");
+        }
+    }
+
+    async function forceCheckout(participantId, participantName, btn) {
+        if (!confirm(`Force checkout "${participantName}" from this room?`)) return;
+
+        btn.disabled = true;
+        btn.textContent = "…";
+
+        const msgDiv = document.getElementById("actionMsg");
+
+        try {
+            const res  = await fetch("http://127.0.0.1:5000/api/rooms/force-checkout", {
+                method : "POST",
+                headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
+                body   : JSON.stringify({ roomId: currentRoomId, participantId })
+            });
+            const data = await res.json();
+
+            msgDiv.className   = `mb-4 text-center text-sm p-3 rounded-xl border font-medium ${res.ok ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30" : "bg-red-500/20 text-red-400 border-red-500/30"}`;
+            msgDiv.textContent = data.message;
+            msgDiv.classList.remove("hidden");
+
+            if (res.ok) {
+                // Reload list after short delay
+                setTimeout(loadRoomDetails, 600);
+            } else {
+                btn.disabled = false;
+                btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7"/></svg> Force Out`;
+            }
+        } catch (e) {
+            console.error("forceCheckout error:", e);
+            msgDiv.className   = "mb-4 text-center text-sm p-3 rounded-xl border font-medium bg-red-500/20 text-red-400 border-red-500/30";
+            msgDiv.textContent = "Server error. Please try again.";
+            msgDiv.classList.remove("hidden");
+            btn.disabled = false;
+        }
+    }
+
+    loadRooms();
+    </script>
+</body>
+</html>
