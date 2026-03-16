@@ -11,7 +11,7 @@ document.getElementById("participantForm").addEventListener("submit", async (e) 
     msgDiv.textContent = "Adding participant...";
 
     try {
-        const res = await fetch("http://localhost:5000/api/participant/create-participant", {
+        const res = await fetch(`${window.CONFIG.API_URL}/api/participant/create-participant`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

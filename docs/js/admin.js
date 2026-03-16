@@ -8,7 +8,7 @@ const password = document.getElementById("password").value
 
 const token = localStorage.getItem("token")
 
-const res = await fetch("http://localhost:5000/api/admin/create-admin",{
+const res = await fetch(`${window.CONFIG.API_URL}/api/admin/create-admin`,{
 
 method:"POST",
 

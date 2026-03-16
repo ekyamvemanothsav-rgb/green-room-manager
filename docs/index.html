@@ -7,6 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
+    <script src="js/config.js"></script>
     <script>
         tailwind.config = {
             theme: { extend: { fontFamily: { sans: ['Inter','sans-serif'] }, colors: { primary: '#10b981', secondary: '#064e3b' } } }
@@ -151,7 +152,7 @@
         btn.innerHTML    = `<svg class="animate-spin h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>Registering…`;
 
         try {
-            const res  = await fetch("http://127.0.0.1:5000/api/auth/participant-register", {
+            const res  = await fetch(`${window.CONFIG.API_URL}/api/auth/participant-register`, {
                 method : "POST",
                 headers: { "Content-Type": "application/json" },
                 body   : JSON.stringify({ name, email, phoneNumber, collegeName, password })

@@ -9,7 +9,7 @@ let allRooms = [];
 
 async function loadRooms() {
     try {
-        const res = await fetch("http://localhost:5000/api/rooms/all");
+        const res = await fetch(`${window.CONFIG.API_URL}/api/rooms/all`);
         if (!res.ok) throw new Error("Failed to fetch rooms");
         allRooms = await res.json();
 

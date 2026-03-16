@@ -39,7 +39,7 @@ async function onScanSuccess(decodedText) {
 
             // Query check-in status
             try {
-                const res = await fetch(`http://localhost:5000/api/rooms/status/${scannedRoomId}`, {
+                const res = await fetch(`${window.CONFIG.API_URL}/api/rooms/status/${scannedRoomId}`, {
                     headers: { "Authorization": "Bearer " + token }
                 });
 
@@ -124,7 +124,7 @@ async function performAction(action) {
     msgDiv.classList.remove("hidden");
 
     try {
-        const res = await fetch(`http://localhost:5000/api/rooms/${action}`, {
+        const res = await fetch(`${window.CONFIG.API_URL}/api/rooms/${action}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

@@ -78,7 +78,7 @@ function logout(){
 
 async function loadRooms(){
     try {
-        const res = await fetch("http://localhost:5000/api/rooms/all")
+        const res = await fetch(`${window.CONFIG.API_URL}/api/rooms/all`)
         if(!res.ok) throw new Error("Failed to fetch")
         const rooms = await res.json()
 
@@ -202,7 +202,7 @@ window.deleteRoom = async function(roomId, roomName) {
 
     try {
         const token = localStorage.getItem("token");
-        const res = await fetch(`http://localhost:5000/api/rooms/${roomId}`, {
+        const res = await fetch(`${window.CONFIG.API_URL}/api/rooms/${roomId}`, {
             method: "DELETE",
             headers: {
                 "Authorization": "Bearer " + token
@@ -252,7 +252,7 @@ window.saveRoomEdit = async function(e) {
         saveBtn.textContent = "Saving...";
         
         const token = localStorage.getItem("token");
-        const res = await fetch(`http://127.0.0.1:5000/api/rooms/${roomId}`, {
+        const res = await fetch(`${window.CONFIG.API_URL}/api/rooms/${roomId}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",

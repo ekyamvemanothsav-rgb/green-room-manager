@@ -26,7 +26,7 @@ document.getElementById("roomForm").addEventListener("submit", async (e) => {
     submitBtn.innerHTML = `<svg class="animate-spin h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>Creating rooms...`;
 
     try {
-        const res = await fetch("http://localhost:5000/api/rooms/bulk-create", {
+        const res = await fetch(`${window.CONFIG.API_URL}/api/rooms/bulk-create`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

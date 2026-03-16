@@ -11,7 +11,7 @@ document.getElementById("coordinatorForm").addEventListener("submit", async (e) 
     msgDiv.textContent = "Creating coordinator...";
 
     try {
-        const res = await fetch("http://localhost:5000/api/coordinator/create-coordinator", {
+        const res = await fetch(`${window.CONFIG.API_URL}/api/coordinator/create-coordinator`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

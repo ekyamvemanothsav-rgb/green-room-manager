@@ -7,6 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
+    <script src="js/config.js"></script>
     <script>
         tailwind.config = {
             theme: { extend: { fontFamily: { sans: ['Inter','sans-serif'] }, colors: { primary: '#10b981', secondary: '#064e3b' } } }
@@ -99,7 +100,7 @@
     // Load all rooms into selector
     async function loadRooms() {
         try {
-            const res   = await fetch("http://127.0.0.1:5000/api/rooms/all");
+            const res   = await fetch(`${window.CONFIG.API_URL}/api/rooms/all`);
             const rooms = await res.json();
             const sel   = document.getElementById("roomSelect");
             sel.innerHTML = rooms.length === 0
@@ -120,7 +121,7 @@
         currentRoomId = roomId;
 
         try {
-            const res  = await fetch(`http://127.0.0.1:5000/api/rooms/details/${roomId}`, {
+            const res  = await fetch(`${window.CONFIG.API_URL}/api/rooms/details/${roomId}`, {
                 headers: { "Authorization": "Bearer " + token }
             });
             
@@ -189,7 +190,7 @@
         const msgDiv = document.getElementById("actionMsg");
 
         try {
-            const res  = await fetch("http://127.0.0.1:5000/api/rooms/force-checkout", {
+            const res  = await fetch(`${window.CONFIG.API_URL}/api/rooms/force-checkout`, {
                 method : "POST",
                 headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
                 body   : JSON.stringify({ roomId: currentRoomId, participantId })
