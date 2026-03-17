@@ -1,4 +1,4 @@
-let html5QrcodeScanner;
+let html5QrCode;
 let scannedRoomId = null;
 
 const token = localStorage.getItem("token");
@@ -18,17 +18,31 @@ function startScanner() {
     document.getElementById("scanStatus").classList.add("hidden");
     document.getElementById("msg").classList.add("hidden");
 
-    html5QrcodeScanner = new Html5QrcodeScanner(
-        "reader",
+    // Ensure any existing instance is cleaned up
+    if (html5QrCode) {
+        try {
+            html5QrCode.stop().catch(() => {});
+        } catch (e) {}
+    }
+
+    html5QrCode = new Html5Qrcode("reader");
+    html5QrCode.start(
+        { facingMode: "environment" }, 
         { fps: 10, qrbox: { width: 250, height: 250 } },
-        false
-    );
-    html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+        onScanSuccess,
+        onScanFailure
+    ).catch(err => {
+        console.error("Camera access error:", err);
+        const statusDiv = document.getElementById("scanStatus");
+        statusDiv.className = "text-center text-sm p-3 rounded-xl border mb-4 font-medium bg-red-500/20 text-red-400 border-red-500/30";
+        statusDiv.textContent = "Could not access camera. Please ensure permissions are granted.";
+        statusDiv.classList.remove("hidden");
+    });
 }
 
 async function onScanSuccess(decodedText) {
-    if (html5QrcodeScanner) {
-        html5QrcodeScanner.clear().then(async () => {
+    if (html5QrCode) {
+        html5QrCode.stop().then(async () => {
             scannedRoomId = decodedText;
 
             // Show loading indicator
@@ -58,7 +72,7 @@ async function onScanSuccess(decodedText) {
                 renderActionButtons(null, "Unknown Room");
             }
 
-        }).catch(err => console.error("Failed to clear scanner:", err));
+        }).catch(err => console.error("Failed to stop scanner:", err));
     }
 }
 
