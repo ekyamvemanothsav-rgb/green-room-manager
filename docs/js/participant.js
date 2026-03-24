@@ -3,6 +3,9 @@ document.getElementById("participantForm").addEventListener("submit", async (e) 
     
     const name = document.getElementById("name").value;
     const email = document.getElementById("email").value;
+    const collegeName = document.getElementById("collegeName").value;
+    const eventName = document.getElementById("eventName").value;
+    const participantsCount = parseInt(document.getElementById("participantsCount").value) || 1;
     const password = document.getElementById("password").value;
     const msgDiv = document.getElementById("msg");
     const token = localStorage.getItem("token");
@@ -17,7 +20,7 @@ document.getElementById("participantForm").addEventListener("submit", async (e) 
                 "Content-Type": "application/json",
                 "Authorization": "Bearer " + token
             },
-            body: JSON.stringify({ name, email, password })
+            body: JSON.stringify({ name, email, password, collegeName, eventName, participantsCount })
         });
 
         const data = await res.json();

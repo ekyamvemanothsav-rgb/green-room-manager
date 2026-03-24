@@ -144,6 +144,20 @@
                             class="w-full px-4 py-3 bg-slate-900/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all">
                     </div>
 
+                    <!-- Event & Participants Count -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="space-y-1">
+                            <label class="text-xs font-semibold text-slate-300 uppercase tracking-wider pl-1">Event Name</label>
+                            <input type="text" id="regEvent" placeholder="e.g. Hackathon" required
+                                class="w-full px-4 py-3 bg-slate-900/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-xs font-semibold text-slate-300 uppercase tracking-wider pl-1">Team Size</label>
+                            <input type="number" id="regParticipantsCount" placeholder="1" min="1" value="1" required
+                                class="w-full px-4 py-3 bg-slate-900/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all">
+                        </div>
+                    </div>
+
                     <button type="submit" id="regBtn"
                         class="w-full py-3.5 px-4 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-teal-500 hover:to-teal-400 text-slate-900 font-bold rounded-xl shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 transition-all duration-300 mt-2 flex items-center justify-center gap-2 text-base">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
@@ -173,6 +187,8 @@
             const email = document.getElementById("regEmail").value.trim();
             const phoneNumber = document.getElementById("regPhone").value.trim();
             const collegeName = document.getElementById("regCollege").value.trim();
+            const eventName = document.getElementById("regEvent").value.trim();
+            const participantsCount = parseInt(document.getElementById("regParticipantsCount").value) || 1;
             const password = document.getElementById("regPass").value;
             const msgDiv = document.getElementById("regMsg");
             const btn = document.getElementById("regBtn");
@@ -185,7 +201,7 @@
                 const res = await fetch(`${window.CONFIG.API_URL}/api/auth/participant-register`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ name, email, phoneNumber, collegeName, password })
+                    body: JSON.stringify({ name, email, phoneNumber, collegeName, eventName, participantsCount, password })
                 });
                 const data = await res.json();
 

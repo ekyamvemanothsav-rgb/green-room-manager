@@ -16,7 +16,7 @@ router.post("/create-participant", verifyToken, async (req, res) => {
             })
         }
 
-        const { name, email, password } = req.body
+        const { name, email, password, collegeName, eventName, participantsCount } = req.body
 
         const existingUser = await User.findOne({ email })
 
@@ -32,7 +32,10 @@ router.post("/create-participant", verifyToken, async (req, res) => {
             name,
             email,
             password: hashedPassword,
-            role: "participant"
+            role: "participant",
+            collegeName: collegeName || "",
+            eventName: eventName || "",
+            participantsCount: participantsCount || 1
         })
 
         await participant.save()

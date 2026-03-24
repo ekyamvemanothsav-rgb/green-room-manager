@@ -201,7 +201,7 @@ router.get("/details/:roomId", verifyToken, async (req, res) => {
         }
 
         const room = await Room.findById(req.params.roomId)
-            .populate("participants", "name phoneNumber collegeName email")
+            .populate("participants", "name phoneNumber collegeName email eventName participantsCount")
 
         if (!room) return res.status(404).json({ message: "Room not found" })
 

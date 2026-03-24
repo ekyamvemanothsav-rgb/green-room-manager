@@ -33,6 +33,16 @@ const UserSchema = new mongoose.Schema({
     collegeName: {
         type: String,
         default: ""
+    },
+
+    eventName: {
+        type: String,
+        default: ""
+    },
+
+    participantsCount: {
+        type: Number,
+        default: 1
     }
 
 })

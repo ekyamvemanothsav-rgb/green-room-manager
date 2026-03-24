@@ -8,7 +8,7 @@ const router = express.Router()
 // PARTICIPANT SELF-REGISTRATION (no auth needed)
 router.post("/participant-register", async (req, res) => {
     try {
-        const { name, email, phoneNumber, collegeName, password } = req.body
+        const { name, email, phoneNumber, collegeName, eventName, participantsCount, password } = req.body
 
         if (!name || !email || !phoneNumber || !collegeName || !password) {
             return res.status(400).json({ message: "Name, email, phone number, college name and password are required" })
@@ -28,7 +28,9 @@ router.post("/participant-register", async (req, res) => {
             password: hashedPassword,
             role: "participant",
             phoneNumber,
-            collegeName
+            collegeName,
+            eventName: eventName || "",
+            participantsCount: participantsCount || 1
         })
 
         await participant.save()
@@ -48,6 +50,8 @@ router.post("/participant-register", async (req, res) => {
                 name: participant.name,
                 phoneNumber: participant.phoneNumber,
                 collegeName: participant.collegeName,
+                eventName: participant.eventName,
+                participantsCount: participant.participantsCount,
                 role: "participant"
             }
         })
@@ -82,7 +86,9 @@ router.post("/login", async (req, res) => {
                 email: user.email,
                 role: user.role,
                 phoneNumber: user.phoneNumber || "",
-                collegeName: user.collegeName || ""
+                collegeName: user.collegeName || "",
+                eventName: user.eventName || "",
+                participantsCount: user.participantsCount || 1
             }
         })
 
@@ -106,6 +112,17 @@ router.post("/register", async (req, res) => {
 
         res.status(200).json({ message: "User registered successfully" })
 
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error: error.message })
+    }
+})
+
+// GET CURRENT USER DETAILS
+router.get("/me", verifyToken, async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id).select("-password")
+        if (!user) return res.status(404).json({ message: "User not found" })
+        res.json(user)
     } catch (error) {
         res.status(500).json({ message: "Server error", error: error.message })
     }

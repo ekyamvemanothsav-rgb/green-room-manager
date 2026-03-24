@@ -11,7 +11,45 @@ if(roleDisplay) {
     roleDisplay.classList.remove("hidden");
 }
 
-const menu = document.getElementById("menu")
+const token = localStorage.getItem("token");
+
+async function loadUserProfile() {
+    if (!token) return;
+    try {
+        const res = await fetch(`${window.CONFIG.API_URL}/api/auth/me`, {
+            headers: { "Authorization": "Bearer " + token }
+        });
+        if (!res.ok) return;
+        const user = await res.json();
+
+        if (user.role === "participant") {
+            const profileSection = document.getElementById("profileSection");
+            if (profileSection) {
+                document.getElementById("profileName").textContent = user.name;
+                document.getElementById("profileCollege").textContent = user.collegeName || "—";
+                document.getElementById("profileEvent").textContent = user.eventName || "—";
+                document.getElementById("profileTeamSize").textContent = user.participantsCount || 1;
+                document.getElementById("profileInitial").textContent = user.name.charAt(0).toUpperCase();
+                profileSection.classList.remove("hidden");
+            }
+        }
+    } catch (err) {
+        console.error("Error loading profile:", err);
+    }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    loadUserProfile();
+    if (role !== "participant") {
+        loadRooms();
+        setInterval(loadRooms, 5000);
+    } else {
+        const roomsSection = document.getElementById("roomsSection");
+        if (roomsSection) roomsSection.classList.add("hidden");
+    }
+});
+
+const menu = document.getElementById("menu");
 
 const btnClass = "px-5 py-2.5 rounded-xl font-medium text-sm transition-all duration-300 shadow-lg flex items-center gap-2 transform hover:-translate-y-0.5";
 
@@ -153,14 +191,7 @@ async function loadRooms(){
     }
 }
 
-if (role !== "participant") {
-    loadRooms()
-    setInterval(loadRooms, 5000)
-} else {
-    // Hide rooms section for participants
-    const roomsSection = document.getElementById("roomsSection");
-    if (roomsSection) roomsSection.classList.add("hidden");
-}
+// Room loading is now handled in DOMContentLoaded
 
 // Track current QR room id for download
 let currentQRRoomId = null;
